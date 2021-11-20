@@ -1,7 +1,15 @@
-const SHA256 = require('crypto-js/sha256');
+import { SHA256 } from "crypto-js";
 
-module.exports = class Block {
-	constructor(index, timestamp, data, previousHash = '') {
+export default class Block {
+
+	index: number;
+	timestamp: string;
+	data: Object;
+	previousHash: string;
+	hash: string;
+	nonce: number;
+
+	constructor(index: number, timestamp: string, data: Object, previousHash: string = '') {
 		this.index = index;
 		this.timestamp = timestamp;
 		this.data = data;
@@ -20,7 +28,7 @@ module.exports = class Block {
 		).toString();
 	}
 
-	mineBlock(difficulty) {
+	mineBlock(difficulty: number) {
 		while (
 			this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')
 		) {
