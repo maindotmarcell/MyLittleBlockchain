@@ -4,21 +4,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const block_1 = __importDefault(require("./block"));
+const transaction_1 = __importDefault(require("./transaction"));
 class Blockchain {
     constructor() {
-        this.chain = [this.createGenesisBlock()];
-        this.difficulty = 4;
+        this._chain = [this.createGenesisBlock()];
+        this.difficulty = 2;
+        this.pendingTransactions = [];
+        this.miningReward = 100;
     }
+    // getter
+    get chain() {
+        return this._chain;
+    }
+    // methods
     createGenesisBlock() {
-        return new block_1.default(0, '01/01/2017', 'Genesis Block', '0');
+        return new block_1.default('01/01/2017', []);
     }
     getLatestBlock() {
         return this.chain[this.chain.length - 1];
     }
-    addBlock(newBlock) {
-        newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.mineBlock(this.difficulty);
-        this.chain.push(newBlock);
+    minePendingTransactions(miningRewardAddress) {
+        let block = new block_1.default(Date.now().toString(), this.pendingTransactions, this.getLatestBlock().hash);
+        block.mineBlock(this.difficulty);
+        console.log('Block successfully mined!');
+        this.chain.push(block);
+        this.pendingTransactions = [
+            new transaction_1.default(this.miningReward, miningRewardAddress)
+        ];
+    }
+    createTransaction(transaction) {
+        this.pendingTransactions.push(transaction);
+    }
+    getBalanceOfAddress(address) {
+        let balance = 0;
+        for (const block of this.chain) {
+            for (const transaction of block.transactions) {
+                if (transaction.fromAddress === address)
+                    balance -= transaction.amount;
+                if (transaction.toAddress === address)
+                    balance += transaction.amount;
+            }
+        }
+        return balance;
     }
     isChainValid() {
         for (let i = 1; i < this.chain.length; i++) {
