@@ -1,7 +1,10 @@
+// Testing file
 import Block from './block.js';
 import Blockchain from './blockchain.js';
 import Transaction from './transaction.js';
 import ec from 'elliptic';
+
+
 
 const EC = new ec.ec('secp256k1');
 
