@@ -24,10 +24,7 @@ class Block {
     }
     // methods
     calculateHash() {
-        return (0, crypto_js_1.SHA256)(this._previousHash +
-            this._timestamp +
-            this._transactions +
-            this._nonce).toString();
+        return (0, crypto_js_1.SHA256)(this._previousHash + this._timestamp + this._transactions + this._nonce).toString();
     }
     mineBlock(difficulty) {
         while (this._hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
@@ -36,6 +33,12 @@ class Block {
         }
         console.log('Block mined: ' + this._hash);
     }
+    hasValidTransactions() {
+        for (let tx of this.transactions) {
+            if (!tx.isValid())
+                return false;
+        }
+        return true;
+    }
 }
 exports.default = Block;
-;
