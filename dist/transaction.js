@@ -22,7 +22,7 @@ class Transaction {
     get amount() {
         return this._amount;
     }
-    // methods
+    // method
     calculateHash() {
         if (this.fromAddress !== null)
             return (0, crypto_js_1.SHA256)(this.fromAddress + '' + this.toAddress + this.amount).toString();

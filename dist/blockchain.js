@@ -66,3 +66,5 @@ class Blockchain {
     }
 }
 exports.default = Blockchain;
+// properties
+Blockchain.instance = new Blockchain();

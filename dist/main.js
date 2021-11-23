@@ -4,43 +4,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const blockchain_js_1 = __importDefault(require("./blockchain.js"));
-const transaction_js_1 = __importDefault(require("./transaction.js"));
-const elliptic_1 = __importDefault(require("elliptic"));
-const EC = new elliptic_1.default.ec('secp256k1');
-const myKey = EC.keyFromPrivate('583a4ab8d9c4632c9decd1ed6b8f7ad7242420032b4de3656da5ca3904bb38ea');
-const myWalletAddress = myKey.getPublic('hex');
+const wallet_js_1 = __importDefault(require("./wallet.js"));
+// const EC = new ec.ec('secp256k1');
+// const myKey = EC.keyFromPrivate('583a4ab8d9c4632c9decd1ed6b8f7ad7242420032b4de3656da5ca3904bb38ea');
+// const myKey = EC.genKeyPair();
+// const myPrivateKey = myKey.getPrivate('hex');
+// const myPublicKey = myKey.getPublic('hex');
 // console.log(`Public key is: ${myWalletAddress}`);
-let marciCoin = new blockchain_js_1.default();
-// marciCoin.addTransaction(new Transaction(100, 'address2', 'address1'));
-// marciCoin.addTransaction(new Transaction(50, 'address1', 'address2'));
-const tx1 = new transaction_js_1.default(10, 'public key goes here', myWalletAddress);
-// console.log(`from address is: ${myWalletAddress} and public key is: ${myKey.getPublic('hex')}`)
-tx1.signTransaction(myKey);
-marciCoin.addTransaction(tx1);
+let marciCoin = blockchain_js_1.default.instance;
+const marci = new wallet_js_1.default();
+const peti = new wallet_js_1.default();
+peti.sendMoney(10, marci.publicKey);
+// const tx1 = new Transaction(10, 'public key goes here', myPublicKey);
+// tx1.signTransaction(myKey);
+// marciCoin.addTransaction(tx1);
+peti.sendMoney(10, marci.publicKey);
+// const tx2 = new Transaction(10, 'public key goes here', myPublicKey);
+// tx2.signTransaction(myKey);
+// marciCoin.addTransaction(tx2);
 console.log('Starting the miner...');
-marciCoin.minePendingTransactions(myWalletAddress);
-console.log('\nBalance of Marcell is: ' + marciCoin.getBalanceOfAddress(myWalletAddress));
+marciCoin.minePendingTransactions(peti.publicKey);
+// console.log(`\nMy public key is: ${myPublicKey}
+// \nMy private key is: ${myPrivateKey}`);
+console.log('\nBalance of Marcell is: ' + marciCoin.getBalanceOfAddress(marci.publicKey));
+console.log('\nBalance of Peti is: ' + marciCoin.getBalanceOfAddress(peti.publicKey));
 console.log('Is chain valid? ' + marciCoin.isChainValid());
-// console.log(`\nMarci's balance is ${marciCoin.getBalanceOfAddress('Marci-address')} \n
-// address 1's balance is ${marciCoin.getBalanceOfAddress('address1')} \n
-// address 2's balance is ${marciCoin.getBalanceOfAddress('address2')} \n`);
-// console.log('Starting the miner again...');
-// marciCoin.minePendingTransactions('Marci-address');
-// console.log(`\nMarci's balance is ${marciCoin.getBalanceOfAddress('Marci-address')} \n
-// address 1's balance is ${marciCoin.getBalanceOfAddress('address1')} \n
-// address 2's balance is ${marciCoin.getBalanceOfAddress('address2')} \n`);
-// console.log(marciCoin.chain);
-// console.log('Mining block 1...')
-// marciCoin.addBlock(
-// 	new Block(1, Date.toString(), { amount: 4 }, marciCoin.getLatestBlock().hash)
-// );
-// console.log('Mining block 2...')
-// marciCoin.addBlock(
-// 	new Block(2, Date.toString(), { amount: 12 }, marciCoin.getLatestBlock().hash)
-// );
-// console.log(JSON.stringify(marciCoin, null, 4));
-// console.log(marciCoin.isChainValid());
-// marciCoin.chain[1].data = { amount: 100};
-// marciCoin.chain[1].hash = marciCoin.chain[1].calculateHash();
-// console.log(JSON.stringify(marciCoin, null, 4));
-// console.log(marciCoin.isChainValid());
+console.log(marciCoin.chain);

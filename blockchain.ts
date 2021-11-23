@@ -3,6 +3,7 @@ import Transaction from './transaction';
 
 export default class Blockchain {
 	// properties
+	public static instance = new Blockchain();
 	private _chain: Block[];
 	private difficulty: number;
 	private pendingTransactions: Transaction[];

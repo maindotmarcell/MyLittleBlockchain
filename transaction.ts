@@ -30,7 +30,7 @@ export default class Transaction {
 		return this._amount;
 	}
 
-	// methods
+	// method
 	calculateHash(): string  {
 		if (this.fromAddress !== null)
 			return SHA256(
