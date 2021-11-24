@@ -10,8 +10,8 @@ class Wallet {
     constructor() {
         const EC = new elliptic_1.default.ec('secp256k1');
         this._keyPair = EC.genKeyPair();
-        this._privateKey = this._keyPair.getPrivate("hex");
-        this._publicKey = this._keyPair.getPublic("hex");
+        this._privateKey = this._keyPair.getPrivate('hex');
+        this._publicKey = this._keyPair.getPublic('hex');
     }
     get keyPair() {
         return this._keyPair;
@@ -23,9 +23,19 @@ class Wallet {
         return this._publicKey;
     }
     sendMoney(amount, payee) {
-        const tx = new transaction_1.default(amount, payee, this._publicKey);
-        tx.signTransaction(this._keyPair);
-        blockchain_1.default.instance.addTransaction(tx);
+        if (!blockchain_1.default.instance.pendingTransaction) {
+            if (blockchain_1.default.instance.getBalanceOfAddress(this._publicKey) >= amount) {
+                const tx = new transaction_1.default(amount, payee, this._publicKey);
+                tx.signTransaction(this._keyPair);
+                blockchain_1.default.instance.addTransaction(tx);
+            }
+            else {
+                throw new Error('Insufficient funds.');
+            }
+        }
+        else {
+            throw new Error('Cannot finish transaction until previous has been mined, try again later.');
+        }
     }
 }
 exports.default = Wallet;

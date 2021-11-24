@@ -4,18 +4,21 @@ import Transaction from './transaction';
 export default class Block {
 	// properties
 	private _timestamp: string;
-	private _transactions: Transaction[];
+	private _transaction: Transaction;
+	private _miningRewardTransaction: Transaction;
 	private _previousHash: string;
 	private _hash: string;
 	private _nonce: number;
 
 	constructor(
 		timestamp: string,
-		transactions: Transaction[],
+		transaction: Transaction,
+		minerReward: Transaction,
 		previousHash: string = ''
 	) {
 		this._timestamp = timestamp;
-		this._transactions = transactions;
+		this._transaction = transaction;
+		this._miningRewardTransaction = minerReward;
 		this._previousHash = previousHash;
 		this._hash = this.calculateHash();
 		this._nonce = 0;
@@ -25,8 +28,8 @@ export default class Block {
 	public get timestamp(): string {
 		return this._timestamp;
 	}
-	public get transactions(): Transaction[] {
-		return this._transactions;
+	public get transaction(): Transaction {
+		return this._transaction;
 	}
 	public get previousHash(): string {
 		return this._previousHash;
@@ -34,15 +37,18 @@ export default class Block {
 	public get hash(): string {
 		return this._hash;
 	}
+	public get miningRewardTransaction(): Transaction {
+		return this._miningRewardTransaction;
+	}
 
 	// methods
 	calculateHash() {
 		return SHA256(
-			this._previousHash + this._timestamp + this._transactions + this._nonce
+			this._previousHash + this._timestamp + this._transaction + this._miningRewardTransaction + this._nonce
 		).toString();
 	}
 
-	mineBlock(difficulty: number) {
+	mine(difficulty: number) {
 		while (
 			this._hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')
 		) {
@@ -52,10 +58,10 @@ export default class Block {
 		console.log('Block mined: ' + this._hash);
 	}
 
-	hasValidTransactions() {
-		for (let tx of this.transactions) {
-			if (!tx.isValid()) return false;
-		}
-		return true;
-	}
+	// hasValidTransactions() {
+	// 	for (let tx of this.transactions) {
+	// 		if (!tx.isValid()) return false;
+	// 	}
+	// 	return true;
+	// }
 }
